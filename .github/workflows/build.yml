@@ -40,10 +40,10 @@ jobs:
 
           keytool -genkeypair -keystore zbridge.jks -alias zbridge \
             -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass android -keypass hiewngwyen \
+            -storepass hiewngwyen -keypass hiewngwyen \
             -dname "CN=itsmengwh08, O=itsmengwh08, C=VN"
           $BT/apksigner sign --ks zbridge.jks \
-            --ks-pass pass:android --key-pass pass:hiewngwyen \
+            --ks-pass pass:hiewngwyen --key-pass pass:hiewngwyen \
             --out ZBridge.apk aligned.apk
 
       - name: Upload build
