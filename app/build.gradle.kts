@@ -10,7 +10,7 @@ android {
         applicationId = "com.zing.zalo"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2611013667
+        versionName = "26.11.01-dirtyvng"
     }
 }
