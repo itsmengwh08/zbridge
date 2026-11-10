@@ -1,0 +1,53 @@
+name: Build ZBridge
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 28-ea
+
+      - name: Get platform-tools
+        run: |
+          SDKM=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
+          yes | $SDKM --licenses > /dev/null || true
+          $SDKM "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Run build
+        run: |
+          BT=$ANDROID_HOME/build-tools/34.0.0
+          JAR=$ANDROID_HOME/platforms/android-34/android.jar
+
+          $BT/aapt2 compile --dir res -o compiled.zip
+
+          $BT/aapt2 link -o unsigned.apk -I $JAR \
+            --manifest AndroidManifest.xml \
+            --min-sdk-version 24 --target-sdk-version 34 \
+            --version-code 1 --version-name 1.0 \
+            compiled.zip
+
+          $BT/zipalign -f 4 unsigned.apk aligned.apk
+
+          keytool -genkeypair -keystore zbridge.jks -alias zbridge \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass hiewngwyen \
+            -dname "CN=itsmengwh08, O=itsmengwh08, C=VN"
+          $BT/apksigner sign --ks zbridge.jks \
+            --ks-pass pass:android --key-pass pass:hiewngwyen \
+            --out ZBridge.apk aligned.apk
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZBridge
+          path: ZBridge.apk
