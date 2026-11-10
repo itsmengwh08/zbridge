@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "itsmengwh08.zbridge"
-    compileSdk = 34
+    namespace = "com.zing.zalo"
+    compileSdk = 37
 
     defaultConfig {
-        applicationId = "itsmengwh08.zbridge"
+        applicationId = "com.zing.zalo"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
     }
